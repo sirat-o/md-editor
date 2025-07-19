@@ -1,14 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Markdown Writer</title>
+  <title>Markdown Editor</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     :root {
@@ -21,6 +25,8 @@
       --button-hover: #555;
       --divider-color: #444;
       --divider-handle: #666;
+      --toolbar-bg: #2a2a2a;
+      --editor-bg: #1a1a1a;
     }
 
     /* Dark Theme (Default) */
@@ -33,6 +39,8 @@
       --button-bg: #333;
       --button-hover: #555;
       --divider-color: #444;
+      --toolbar-bg: #2a2a2a;
+      --editor-bg: #1a1a1a;
     }
 
     /* Light Theme */
@@ -45,6 +53,8 @@
       --button-bg: #e0e0e0;
       --button-hover: #d0d0d0;
       --divider-color: #ddd;
+      --toolbar-bg: #f0f0f0;
+      --editor-bg: #ffffff;
     }
 
     /* Blue Theme */
@@ -57,6 +67,8 @@
       --button-bg: #415a77;
       --button-hover: #5e7ba1;
       --divider-color: #314a6e;
+      --toolbar-bg: #1b263b;
+      --editor-bg: #0d1b2a;
     }
 
     /* Dark Blue Theme */
@@ -69,6 +81,8 @@
       --button-bg: #233554;
       --button-hover: #3a597d;
       --divider-color: #1e3a6b;
+      --toolbar-bg: #112240;
+      --editor-bg: #0a192f;
     }
 
     /* Deep Purple Theme */
@@ -81,6 +95,8 @@
       --button-bg: #3d2c5a;
       --button-hover: #5a3d7a;
       --divider-color: #3a2c5a;
+      --toolbar-bg: #16213e;
+      --editor-bg: #1a1a2e;
     }
 
     /* Solarized Dark Theme */
@@ -93,18 +109,28 @@
       --button-bg: #586e75;
       --button-hover: #657b83;
       --divider-color: #475b62;
+      --toolbar-bg: #073642;
+      --editor-bg: #002b36;
     }
 
     * { box-sizing: border-box; }
-    body {
+    
+    /* Fixed scrolling: prevent body scroll */
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden; /* Prevent window scrolling */
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: var(--bg-color);
       color: var(--text-color);
+    }
+    
+    body {
       display: flex;
       flex-direction: column;
-      height: 100vh;
     }
+    
     header {
       padding: 12px 20px;
       background: var(--header-bg);
@@ -112,6 +138,7 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--divider-color);
+      flex-shrink: 0; /* Prevent header from shrinking */
     }
     header h1 {
       margin: 0;
@@ -141,34 +168,119 @@
     .toolbar select {
       padding: 6px 8px;
     }
+
+    /* Rich Toolbar Styles */
+    .rich-toolbar {
+      padding: 8px 15px;
+      background: var(--toolbar-bg);
+      border-bottom: 1px solid var(--divider-color);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0; /* Prevent toolbar from shrinking */
+    }
+    .toolbar-group {
+      display: flex;
+      gap: 2px;
+      padding-right: 10px;
+      border-right: 1px solid var(--divider-color);
+      margin-right: 5px;
+    }
+    .toolbar-group:last-child {
+      border-right: none;
+      margin-right: 0;
+    }
+    .toolbar-btn {
+      padding: 6px 8px;
+      background: transparent;
+      color: var(--text-color);
+      border: 1px solid transparent;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.85em;
+      transition: all 0.2s ease;
+      min-width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toolbar-btn:hover {
+      background: var(--button-hover);
+      border-color: var(--divider-color);
+    }
+    .toolbar-btn.active {
+      background: var(--accent-color);
+      color: var(--bg-color);
+    }
+    .toolbar-select {
+      padding: 4px 8px;
+      background: var(--button-bg);
+      color: var(--text-color);
+      border: 1px solid var(--divider-color);
+      border-radius: 3px;
+      font-size: 0.85em;
+      cursor: pointer;
+    }
+
     main {
       flex: 1;
       display: flex;
-      overflow: hidden;
-      position: relative;
+      overflow: hidden; /* Prevent main from scrolling */
+      min-height: 0; /* Allow flex children to shrink */
     }
 
-.editor-container, .preview-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  display: none;
-}
+    /* Fixed layout for live preview mode */
+    .main-live {
+      flex-direction: row;
+    }
 
-.editor-container.active, .preview-container.active {
-  display: flex;
-}
+    .main-manual {
+      flex-direction: column;
+    }
 
-    .editor-container {
+    .editor-container, .preview-container {
       display: flex;
       flex-direction: column;
+      overflow: hidden; /* Prevent container scrolling */
+      min-height: 0; /* Allow flex children to shrink */
     }
-    .preview-container {
+
+    /* Live preview mode - side by side */
+    .main-live .editor-container,
+    .main-live .preview-container {
+      width: 50%;
+      height: 100%;
+    }
+
+    /* Manual preview mode - full width, toggle visibility */
+    .main-manual .editor-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    .main-manual .preview-container {
+      width: 100%;
+      height: 100%;
       display: none;
+    }
+
+    .main-manual .preview-container.active {
+      display: flex;
+    }
+
+    .main-manual .editor-container.hidden {
+      display: none;
+    }
+
+    .editor-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
       flex-direction: column;
+      overflow: hidden; /* Prevent wrapper scrolling */
+      min-height: 0; /* Allow flex children to shrink */
     }
 
     textarea {
@@ -179,18 +291,51 @@
       line-height: 1.6;
       border: none;
       resize: none;
-      background: var(--bg-color);
+      background: var(--editor-bg);
       color: var(--text-color);
       outline: none;
-      font-family: 'Consolas', 'Monaco', monospace;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
       tab-size: 2;
       flex: 1;
+      overflow-y: auto; /* Allow textarea to scroll vertically */
+      overflow-x: auto; /* Allow textarea to scroll horizontally if needed */
     }
+
+    /* Preview container with proper scrolling */
+    .preview-toolbar {
+      padding: 8px 15px;
+      background: var(--header-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--divider-color);
+      flex-shrink: 0; /* Prevent toolbar from shrinking */
+    }
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .preview-actions button {
+      padding: 4px 8px;
+      font-size: 0.85em;
+      background: var(--button-bg);
+      color: var(--text-color);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .preview-actions button:hover {
+      background: var(--button-hover);
+    }
+
     #preview {
       padding: 20px;
       background: var(--preview-bg);
       flex: 1;
-      overflow: auto;
+      overflow-y: auto; /* Allow preview to scroll vertically */
+      overflow-x: auto; /* Allow preview to scroll horizontally if needed */
+      min-height: 0; /* Allow flex child to shrink */
     }
     #preview h1, #preview h2, #preview h3, #preview h4, #preview h5, #preview h6 {
       color: var(--accent-color);
@@ -206,7 +351,7 @@
       background: rgba(0, 0, 0, 0.1);
       padding: 0.2em 0.4em;
       border-radius: 3px;
-      font-family: 'Consolas', 'Monaco', monospace;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
       font-size: 0.9em;
     }
     #preview pre {
@@ -257,31 +402,15 @@
       margin: 0.5em 0;
       line-height: 1.6;
     }
-    .preview-toolbar {
-      padding: 8px 15px;
-      background: var(--header-bg);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--divider-color);
+
+    /* Math rendering styles */
+    .katex {
+      font-size: 1.1em;
     }
-    .preview-actions {
-      display: flex;
-      gap: 8px;
+    .katex-display {
+      margin: 1em 0;
     }
-    .preview-actions button {
-      padding: 4px 8px;
-      font-size: 0.85em;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      font-size: 0.85em;
-      background: var(--header-bg);
-      color: var(--text-color);
-      opacity: 0.7;
-      border-top: 1px solid var(--divider-color);
-    }
+
     .word-count {
       font-size: 0.85em;
       color: var(--text-color);
@@ -296,6 +425,7 @@
       color: var(--text-color);
       opacity: 0.7;
       border-top: 1px solid var(--divider-color);
+      flex-shrink: 0; /* Prevent status bar from shrinking */
     }
     .theme-selector {
       position: relative;
@@ -329,12 +459,65 @@
     .theme-selector:hover .theme-dropdown {
       display: block;
     }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .main-live {
+        flex-direction: column;
+      }
+      .main-live .editor-container,
+      .main-live .preview-container {
+        width: 100%;
+        height: 50%;
+      }
+      .rich-toolbar {
+        padding: 5px 10px;
+        gap: 3px;
+      }
+      .toolbar-group {
+        padding-right: 5px;
+        margin-right: 3px;
+      }
+      .toolbar-btn {
+        padding: 4px 6px;
+        min-width: 28px;
+        height: 28px;
+        font-size: 0.8em;
+      }
+      textarea {
+        padding: 15px;
+        font-size: 0.9em;
+      }
+      #preview {
+        padding: 15px;
+      }
+    }
+
+    /* Custom scrollbar styles */
+    textarea::-webkit-scrollbar,
+    #preview::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    textarea::-webkit-scrollbar-track,
+    #preview::-webkit-scrollbar-track {
+      background: var(--bg-color);
+    }
+    textarea::-webkit-scrollbar-thumb,
+    #preview::-webkit-scrollbar-thumb {
+      background: var(--divider-color);
+      border-radius: 4px;
+    }
+    textarea::-webkit-scrollbar-thumb:hover,
+    #preview::-webkit-scrollbar-thumb:hover {
+      background: var(--button-hover);
+    }
   </style>
 </head>
 <body class="theme-dark">
 
 <header>
-  <h1><i class="fa-brands fa-markdown"></i>Markdown Writer</h1>
+  <h1><i class="fa-brands fa-markdown"></i>Markdown Editor</h1>
   <div class="toolbar">
     <div class="theme-selector">
       <button id="theme-btn"><i class="fas fa-palette"></i> Theme</button>
@@ -358,9 +541,100 @@
   </div>
 </header>
 
-<main>
-  <div class="editor-container active" id="editor-container">
-    <textarea id="editor" placeholder="# Start writing your markdown here...\n\n- Use # for headings\n- Use * or - for lists\n- Use **bold** or *italic* text\n- Use ``` for code blocks\n- And more..."></textarea>
+<main id="main" class="main-live">
+  <div class="editor-container" id="editor-container">
+    <div class="rich-toolbar">
+      <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="insertText('# ', '')" title="Heading 1"><i class="fas fa-heading"></i>1</button>
+        <button class="toolbar-btn" onclick="insertText('## ', '')" title="Heading 2"><i class="fas fa-heading"></i>2</button>
+        <button class="toolbar-btn" onclick="insertText('### ', '')" title="Heading 3"><i class="fas fa-heading"></i>3</button>
+      </div>
+      <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="wrapText('**', '**')" title="Bold"><i class="fas fa-bold"></i></button>
+        <button class="toolbar-btn" onclick="wrapText('*', '*')" title="Italic"><i class="fas fa-italic"></i></button>
+        <button class="toolbar-btn" onclick="wrapText('~~', '~~')" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+        <button class="toolbar-btn" onclick="wrapText('`', '`')" title="Inline Code"><i class="fas fa-code"></i></button>
+      </div>
+      <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="insertText('- ', '')" title="Unordered List"><i class="fas fa-list-ul"></i></button>
+        <button class="toolbar-btn" onclick="insertText('1. ', '')" title="Ordered List"><i class="fas fa-list-ol"></i></button>
+        <button class="toolbar-btn" onclick="insertText('- [ ] ', '')" title="Task List"><i class="fas fa-tasks"></i></button>
+      </div>
+      <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="insertText('> ', '')" title="Quote"><i class="fas fa-quote-left"></i></button>
+        <button class="toolbar-btn" onclick="insertText('```\n', '\n```')" title="Code Block"><i class="fas fa-code"></i></button>
+        <button class="toolbar-btn" onclick="insertText('---\n', '')" title="Horizontal Rule"><i class="fas fa-minus"></i></button>
+      </div>
+      <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="insertText('[', '](url)')" title="Link"><i class="fas fa-link"></i></button>
+        <button class="toolbar-btn" onclick="insertText('![alt](', ')')" title="Image"><i class="fas fa-image"></i></button>
+        <button class="toolbar-btn" onclick="insertTable()" title="Table"><i class="fas fa-table"></i></button>
+      </div>
+      <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="wrapText('$', '$')" title="Inline Math"><i class="fas fa-square-root-alt"></i></button>
+        <button class="toolbar-btn" onclick="wrapText('$$\n', '\n$$')" title="Display Math"><i class="fas fa-calculator"></i></button>
+      </div>
+      <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="undoAction()" title="Undo"><i class="fas fa-undo"></i></button>
+        <button class="toolbar-btn" onclick="redoAction()" title="Redo"><i class="fas fa-redo"></i></button>
+      </div>
+    </div>
+    <div class="editor-wrapper">
+      <textarea id="editor" placeholder="# Welcome to Rich Markdown Editor!
+
+Start writing your markdown here with advanced features:
+
+## Math Equations
+Inline math: $E = mc^2$
+Display math: $$\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}$$
+
+## Rich Formatting
+**Bold text**, *italic text*, ~~strikethrough~~, and `inline code`
+
+## Lists
+- Unordered list item
+- Another item
+  - Nested item
+
+1. Ordered list item
+2. Another item
+
+## Code Blocks
+```javascript
+function hello() {
+  console.log('Hello, World!');
+}
+```
+
+## Tables
+| Feature | Status |
+|---------|--------|
+| Math rendering | ✅ |
+| Syntax highlighting | ✅ |
+| Rich toolbar | ✅ |
+
+## Links and Images
+[Link to example](https://example.com)
+![Sample image](https://via.placeholder.com/300x200)
+
+> This is a blockquote with **rich** formatting support.
+
+---
+
+Happy writing! 🚀
+
+Try scrolling in this editor - only this area scrolls, not the whole window!
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+
+Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+
+At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident."></textarea>
+    </div>
     <div class="status-bar">
       <span class="word-count">Words: 0 | Characters: 0</span>
       <span id="syntax-help"><i class="fas fa-question-circle"></i> Markdown Help</span>
@@ -378,10 +652,6 @@
   </div>
 </main>
 
-<footer>
-  Developed with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by MAS | Press Ctrl+S to save
-</footer>
-
 <script>
   const editor = document.getElementById('editor');
   const preview = document.getElementById('preview');
@@ -389,11 +659,27 @@
   const toggleViewBtn = document.getElementById('toggle-view-btn');
   const editorContainer = document.getElementById('editor-container');
   const previewContainer = document.getElementById('preview-container');
+  const main = document.getElementById('main');
   const wordCountEl = document.querySelector('.word-count');
   const syntaxHelp = document.getElementById('syntax-help');
 
   let isLivePreview = true;
   let isPreviewVisible = false;
+  let undoStack = [];
+  let redoStack = [];
+  let currentContent = '';
+
+  // Configure marked for better markdown parsing
+  marked.setOptions({
+    breaks: true,
+    gfm: true,
+    highlight: function(code, lang) {
+      if (lang && Prism.languages[lang]) {
+        return Prism.highlight(code, Prism.languages[lang], lang);
+      }
+      return code;
+    }
+  });
 
   // Initialize
   function init() {
@@ -401,8 +687,13 @@
     modeSelect.addEventListener('change', togglePreviewMode);
     toggleViewBtn.addEventListener('click', toggleView);
     editor.addEventListener('input', handleEditorInput);
+    editor.addEventListener('keydown', handleKeyDown);
     syntaxHelp.addEventListener('click', showSyntaxHelp);
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    
+    // Initialize content and undo stack
+    currentContent = editor.value;
+    saveToUndoStack();
     
     // Set initial preview mode
     togglePreviewMode();
@@ -413,55 +704,93 @@
     if (isLivePreview) {
       updatePreview();
     }
+    
+    // Save to undo stack if content changed significantly
+    if (Math.abs(editor.value.length - currentContent.length) > 10 || 
+        editor.value !== currentContent) {
+      saveToUndoStack();
+      currentContent = editor.value;
+    }
+  }
+
+  function saveToUndoStack() {
+    undoStack.push({
+      content: editor.value,
+      selectionStart: editor.selectionStart,
+      selectionEnd: editor.selectionEnd
+    });
+    if (undoStack.length > 50) {
+      undoStack.shift();
+    }
+    redoStack = [];
   }
 
   function updatePreview() {
-    preview.innerHTML = marked.parse(editor.value);
+    let content = editor.value;
+    
+    // Process math expressions before markdown
+    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: true });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    content = content.replace(/\$([^$\n]+?)\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: false });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    // Parse markdown
+    preview.innerHTML = marked.parse(content);
+    
+    // Apply syntax highlighting to code blocks
+    Prism.highlightAllUnder(preview);
   }
 
-function togglePreviewMode() {
-  isLivePreview = modeSelect.value === 'live';
-  toggleViewBtn.style.display = isLivePreview ? 'none' : 'block';
-  
-  if (isLivePreview) {
-    // Live Preview: Show both editor and preview side by side
-    editorContainer.style.position = 'relative';
-    previewContainer.style.position = 'relative';
-    editorContainer.style.width = '50%';
-    previewContainer.style.width = '50%';
-    editorContainer.classList.add('active');
-    previewContainer.classList.add('active');
-    updatePreview();
-  } else {
-    // Manual Preview: Show only editor (full width)
-    editorContainer.style.position = 'absolute';
-    editorContainer.style.width = '100%';
-    previewContainer.style.width = '100%';
-    editorContainer.classList.add('active');
-    previewContainer.classList.remove('active');
-    isPreviewVisible = false;
-    toggleViewBtn.innerHTML = '<i class="fas fa-eye"></i> Preview';
+  function togglePreviewMode() {
+    isLivePreview = modeSelect.value === 'live';
+    
+    if (isLivePreview) {
+      // Live Preview: Show both editor and preview side by side
+      main.className = 'main-live';
+      toggleViewBtn.style.display = 'none';
+      editorContainer.classList.remove('hidden');
+      previewContainer.classList.remove('active');
+      updatePreview();
+    } else {
+      // Manual Preview: Show only editor (full width)
+      main.className = 'main-manual';
+      toggleViewBtn.style.display = 'block';
+      editorContainer.classList.remove('hidden');
+      previewContainer.classList.remove('active');
+      isPreviewVisible = false;
+      toggleViewBtn.innerHTML = '<i class="fas fa-eye"></i> Preview';
+    }
   }
-}
 
-function toggleView() {
-  if (isLivePreview) return;
-  
-  isPreviewVisible = !isPreviewVisible;
-  
-  if (isPreviewVisible) {
-    // Show Preview ONLY (full screen)
-    editorContainer.classList.remove('active');
-    previewContainer.classList.add('active');
-    toggleViewBtn.innerHTML = '<i class="fas fa-edit"></i> Editor';
-    updatePreview();
-  } else {
-    // Show Editor ONLY (full screen)
-    editorContainer.classList.add('active');
-    previewContainer.classList.remove('active');
-    toggleViewBtn.innerHTML = '<i class="fas fa-eye"></i> Preview';
+  function toggleView() {
+    if (isLivePreview) return;
+    
+    isPreviewVisible = !isPreviewVisible;
+    
+    if (isPreviewVisible) {
+      // Show Preview ONLY (full screen)
+      editorContainer.classList.add('hidden');
+      previewContainer.classList.add('active');
+      toggleViewBtn.innerHTML = '<i class="fas fa-edit"></i> Editor';
+      updatePreview();
+    } else {
+      // Show Editor ONLY (full screen)
+      editorContainer.classList.remove('hidden');
+      previewContainer.classList.remove('active');
+      toggleViewBtn.innerHTML = '<i class="fas fa-eye"></i> Preview';
+    }
   }
-}
 
   function refreshPreview() {
     updatePreview();
@@ -474,62 +803,171 @@ function toggleView() {
     wordCountEl.textContent = `Words: ${wordCount} | Characters: ${charCount}`;
   }
 
-  function showSyntaxHelp() {
-    const helpText = `# Markdown Cheat Sheet
-
-## Headers
-# H1
-## H2
-### H3
-
-## Emphasis
-*italic* or _italic_
-**bold** or __bold__
-~~strikethrough~~
-
-## Lists
-- Unordered item
-* Another item
-+ Yet another item
-
-1. Ordered item
-2. Another item
-
-## Links & Images
-[Link text](https://example.com)
-![Alt text](image.jpg)
-
-## Code
-\`inline code\`
-
-\`\`\`javascript
-// Code block
-function hello() {
-  console.log("Hello!");
-}
-\`\`\`
-
-## Blockquotes
-> This is a blockquote
-
-## Tables
-| Syntax | Description |
-|--------|-------------|
-| Header | Title       |
-| Paragraph | Text      |
-
-## Horizontal Rule
----`;
-
-    if (editor.value.trim() === '') {
-      editor.value = helpText;
-    } else {
-      editor.value = helpText + '\n\n' + editor.value;
-    }
+  // Rich toolbar functions
+  function insertText(before, after) {
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const text = editor.value;
+    const selectedText = text.substring(start, end);
+    
+    const newText = text.substring(0, start) + before + selectedText + after + text.substring(end);
+    editor.value = newText;
+    
+    // Set cursor position
+    const newCursorPos = start + before.length + selectedText.length + after.length;
+    editor.setSelectionRange(newCursorPos, newCursorPos);
     editor.focus();
-    updatePreview();
-    updateWordCount();
+    
+    handleEditorInput();
   }
+
+  function wrapText(before, after) {
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const text = editor.value;
+    const selectedText = text.substring(start, end);
+    
+    if (selectedText) {
+      const newText = text.substring(0, start) + before + selectedText + after + text.substring(end);
+      editor.value = newText;
+      editor.setSelectionRange(start + before.length, start + before.length + selectedText.length);
+    } else {
+      const newText = text.substring(0, start) + before + after + text.substring(end);
+      editor.value = newText;
+      editor.setSelectionRange(start + before.length, start + before.length);
+    }
+    
+    editor.focus();
+    handleEditorInput();
+  }
+
+  function insertTable() {
+    const tableText = `| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Cell 1   | Cell 2   | Cell 3   |
+| Cell 4   | Cell 5   | Cell 6   |
+
+`;
+    insertText(tableText, '');
+  }
+
+  function undoAction() {
+    if (undoStack.length > 1) {
+      const current = undoStack.pop();
+      redoStack.push(current);
+      const previous = undoStack[undoStack.length - 1];
+      editor.value = previous.content;
+      editor.setSelectionRange(previous.selectionStart, previous.selectionEnd);
+      currentContent = editor.value;
+      handleEditorInput();
+    }
+  }
+
+  function redoAction() {
+    if (redoStack.length > 0) {
+      const next = redoStack.pop();
+      undoStack.push(next);
+      editor.value = next.content;
+      editor.setSelectionRange(next.selectionStart, next.selectionEnd);
+      currentContent = editor.value;
+      handleEditorInput();
+    }
+  }
+
+  function handleKeyDown(e) {
+    // Tab handling
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      
+      if (e.shiftKey) {
+        // Shift+Tab: Remove indentation
+        const lines = editor.value.split('\n');
+        const startLine = editor.value.substring(0, start).split('\n').length - 1;
+        const endLine = editor.value.substring(0, end).split('\n').length - 1;
+        
+        for (let i = startLine; i <= endLine; i++) {
+          if (lines[i].startsWith('  ')) {
+            lines[i] = lines[i].substring(2);
+          } else if (lines[i].startsWith('\t')) {
+            lines[i] = lines[i].substring(1);
+          }
+        }
+        
+        editor.value = lines.join('\n');
+      } else {
+        // Tab: Add indentation
+        editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+        editor.setSelectionRange(start + 2, start + 2);
+      }
+      
+      handleEditorInput();
+    }
+  }
+
+  function handleGlobalKeyDown(e) {
+    // Global shortcuts
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key) {
+        case 's':
+          e.preventDefault();
+          exportHTML();
+          break;
+        case 'z':
+          if (!e.shiftKey) {
+            e.preventDefault();
+            undoAction();
+          }
+          break;
+        case 'y':
+        case 'Z':
+          if (e.shiftKey) {
+            e.preventDefault();
+            redoAction();
+          }
+          break;
+        case 'b':
+          if (document.activeElement === editor) {
+            e.preventDefault();
+            wrapText('**', '**');
+          }
+          break;
+        case 'i':
+          if (document.activeElement === editor) {
+            e.preventDefault();
+            wrapText('*', '*');
+          }
+          break;
+      }
+    }
+  }
+
+function showSyntaxHelp() {
+  const url = "https://raw.githubusercontent.com/mish0as/md-editor/refs/heads/main/help.text";
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to load help file.");
+      }
+      return response.text();
+    })
+    .then(helpText => {
+      if (editor.value.trim() === '') {
+        editor.value = helpText;
+      } else {
+        editor.value = helpText + '\n\n' + editor.value;
+      }
+      editor.focus();
+      updatePreview();
+      updateWordCount();
+    })
+    .catch(error => {
+      alert("Error loading help text: " + error.message);
+    });
+}
+
 
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
@@ -541,14 +979,6 @@ function hello() {
     }
   }
 
-  function handleKeyDown(e) {
-    // Ctrl+S to save as HTML
-    if (e.ctrlKey && e.key === 's') {
-      e.preventDefault();
-      exportHTML();
-    }
-  }
-
   function changeTheme(themeName) {
     document.body.className = 'theme-' + themeName;
     // Update preview to reflect new theme colors
@@ -557,13 +987,38 @@ function hello() {
     }
   }
 
-function exportHTML() {
+  function exportHTML() {
+    // Create a temporary preview with math rendered
+    const tempDiv = document.createElement('div');
+    let content = editor.value;
+    
+    // Process math expressions
+    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: true });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    content = content.replace(/\$([^$\n]+?)\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: false });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    tempDiv.innerHTML = marked.parse(content);
+
     const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Markdown Export</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -587,7 +1042,7 @@ function exportHTML() {
       background: #f8f8f8;
       padding: 0.2em 0.4em;
       border-radius: 3px;
-      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: 0.9em;
       color: #e83e8c;
     }
@@ -661,15 +1116,16 @@ function exportHTML() {
       background: #eee;
       margin: 2em 0;
     }
-    .highlight {
-      background: #fff8e1;
-      padding: 0.2em;
-      border-radius: 3px;
+    .katex {
+      font-size: 1.1em;
+    }
+    .katex-display {
+      margin: 1em 0;
     }
   </style>
 </head>
 <body>
-${preview.innerHTML}
+${tempDiv.innerHTML}
 </body>
 </html>`;
     
@@ -678,19 +1134,41 @@ ${preview.innerHTML}
     link.href = URL.createObjectURL(blob);
     link.download = 'markdown_export.html';
     link.click();
-}
+  }
+
   function exportPDF() {
-    const clone = preview.cloneNode(true);
+    // Create a temporary preview with math rendered
+    const tempDiv = document.createElement('div');
+    let content = editor.value;
+    
+    // Process math expressions
+    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: true });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    content = content.replace(/\$([^$\n]+?)\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: false });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    tempDiv.innerHTML = marked.parse(content);
 
     // Style for PDF appearance (light mode)
-    clone.style.background = '#ffffff';
-    clone.style.color = '#111111';
-    clone.style.padding = '30px';
-    clone.style.fontFamily = 'Georgia, serif';
-    clone.style.fontSize = '12pt';
-    clone.style.lineHeight = '1.6';
-    clone.style.maxWidth = '800px';
-    clone.style.margin = 'auto';
+    tempDiv.style.background = '#ffffff';
+    tempDiv.style.color = '#111111';
+    tempDiv.style.padding = '30px';
+    tempDiv.style.fontFamily = 'Georgia, serif';
+    tempDiv.style.fontSize = '12pt';
+    tempDiv.style.lineHeight = '1.6';
+    tempDiv.style.maxWidth = '800px';
+    tempDiv.style.margin = 'auto';
 
     // Wrap in container
     const container = document.createElement('div');
@@ -699,7 +1177,7 @@ ${preview.innerHTML}
     container.style.top = '0';
     container.style.width = '1000px';
     container.style.background = '#ffffff';
-    container.appendChild(clone);
+    container.appendChild(tempDiv);
     document.body.appendChild(container);
 
     // Options for html2pdf
@@ -712,38 +1190,58 @@ ${preview.innerHTML}
       pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
-    html2pdf().set(opt).from(clone).save().then(() => {
+    html2pdf().set(opt).from(tempDiv).save().then(() => {
       document.body.removeChild(container);
     });
   }
 
   function exportImage() {
-    // Clone the preview content
-    const clone = preview.cloneNode(true);
-    clone.style.width = preview.scrollWidth + 'px';
-    clone.style.position = 'absolute';
-    clone.style.top = '0';
-    clone.style.left = '-9999px';
-    clone.style.background = '#1e1e1e';
-    clone.style.color = '#eee';
-    clone.style.padding = '20px';
-    clone.style.zIndex = '-1';
-    clone.style.overflow = 'visible';
+    // Create a temporary preview with math rendered
+    const tempDiv = document.createElement('div');
+    let content = editor.value;
+    
+    // Process math expressions
+    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: true });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    content = content.replace(/\$([^$\n]+?)\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math, { displayMode: false });
+      } catch (e) {
+        return `<span style="color: red;">Math Error: ${e.message}</span>`;
+      }
+    });
+    
+    tempDiv.innerHTML = marked.parse(content);
+    tempDiv.style.width = '800px';
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.top = '0';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.background = '#1e1e1e';
+    tempDiv.style.color = '#eee';
+    tempDiv.style.padding = '20px';
+    tempDiv.style.zIndex = '-1';
+    tempDiv.style.overflow = 'visible';
 
     // Let browser calculate full height
-    document.body.appendChild(clone);
+    document.body.appendChild(tempDiv);
     requestAnimationFrame(() => {
-      html2canvas(clone, {
+      html2canvas(tempDiv, {
         scale: 3,
         useCORS: true,
-        windowWidth: clone.scrollWidth,
-        windowHeight: clone.scrollHeight
+        windowWidth: tempDiv.scrollWidth,
+        windowHeight: tempDiv.scrollHeight
       }).then(canvas => {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
         link.download = 'markdown_export.png';
         link.click();
-        document.body.removeChild(clone);
+        document.body.removeChild(tempDiv);
       });
     });
   }
