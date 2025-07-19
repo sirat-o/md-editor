@@ -1,0 +1,177 @@
+# Rich Markdown Editor Help
+
+## Headers
+# H1  
+## H2  
+### H3  
+#### H4  
+##### H5  
+###### H6  
+
+## 2. Text Formatting
+
+- *Italic*
+- **Bold**
+- ***Bold Italic***
+- ~~Strikethrough~~
+- `Inline code`
+- <sub>Subscript</sub>, <sup>Superscript</sup>
+- Escaped characters: \* \_ \` \> \\ \#
+
+---
+
+## Math Equations
+Inline: $E = mc^2$
+Display: 
+$$\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}$$
+$$
+\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
+$$
+
+## Lists
+- Unordered item
+* Another item
++ Yet another item
+
+1. Ordered item
+2. Another item
+
+- [ ] Task item
+- [ ] Nested?
+  - [x] Like this
+  - [ ] And this?
+
+### - Unordered
+- Item 1  
+  - Subitem A  
+    - Sub-subitem i  
+      - Deep Nesting 🌊
+
+### 1. Ordered
+1. Step One
+   1. Step 1.1
+      1. Step 1.1.1
+         1. ✅ Done?
+
+---
+
+## Images & Links
+
+![Alt text](https://via.placeholder.com/150 "Optional title")
+
+[Website](https://openai.com)
+[https://google.com](https://google.com)
+[Internal Link](#blockquotes-with-nesting)
+
+---
+
+## Code
+`inline code`
+
+```js
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+}
+````
+
+```python
+def greet(name: str) -> None:
+    print(f"Hello, {name}")
+```
+
+```yaml
+title: Full Markdown Test
+author: Front Man
+tags: [markdown, test, full]
+```
+---
+## Tables
+| Syntax | Description |
+|--------|-------------|
+| Header | Title       |
+| Paragraph | Text      |
+
+## Horizontal Rule
+---
+
+##  Embedded HTML
+
+<div style="border: 1px dashed #aaa; padding: 1em; background: #222; color: #0f0;">
+  <h4>🧪 HTML Test Block</h4>
+  <p>This should render as raw HTML inside Markdown.</p>
+</div>
+
+<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
+
+---
+## Collapsible Sections
+
+<details>
+<summary>Click to expand code example</summary>
+
+```bash
+#!/bin/bash
+echo "This is a collapsible bash block"
+```
+
+</details>
+
+---
+## Blockquotes
+
+> Standard blockquote  
+> Spanning multiple lines
+
+> Nested
+>> Blockquotes
+>>> Work too
+
+> **Markdown** inside  
+> - Lists
+> - [Links](https://example.com)
+--------
+## Diagrams
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
+---
+
+&copy; 2025 Your Company  
+&mdash; This is a dash  
+&nbsp; Non-breaking space  
+&gt; Greater than symbol  
+&lt; Less than symbol
+
+----
+
+## Complex Combination
+
+### Nested Elements
+
+> ### Blockquote Heading
+> 1. **List** item
+> 2. With `code`:
+>    ```python
+>    print("Hello")
+>    ```
+> 3. And a table:
+>    | a | b |
+>    |---|---|
+>    | 1 | 2 |
+-----
+------
+---
+## Keyboard Shortcuts
+- Ctrl+B: Bold
+- Ctrl+I: Italic
+- Ctrl+Z: Undo
+- Ctrl+Y: Redo
+- Ctrl+S: Export HTML
+- Tab: Indent
+- Shift+Tab: Unindent
