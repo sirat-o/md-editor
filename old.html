@@ -328,6 +328,33 @@
     .theme-selector:hover .theme-dropdown {
       display: block;
     }
+
+  .live-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 6px;
+    border-radius: 50%;
+    background-color: #ff4f4f;
+    box-shadow: 0 0 0 0 rgba(255, 79, 79, 0.7);
+    animation: pulse 1s infinite ease-in-out;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 79, 79, 0.7);
+    }
+    50% {
+      transform: scale(1.4);
+      box-shadow: 0 0 0 10px rgba(255, 79, 79, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 79, 79, 0);
+    }
+  }
   </style>
 </head>
 <body class="theme-dark">
@@ -377,8 +404,12 @@
   </div>
 </main>
 
-<footer>
-  Developed with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by MAS | Press Ctrl+S to save
+
+<footer style="text-align: center; padding: 1em; font-size: 1rem; color: #fffefe;">
+  This is an old version. Please use the &nbsp; <span class="live-dot" title="Live"></span>
+   <b><a href="https://mish0as.github.io/md-editor/" target="_blank" style="color: #4fa3ff; text-decoration: none;">
+    new version
+  </a></b> of the Markdown Editor.
 </footer>
 
 <script>
