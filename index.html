@@ -689,6 +689,7 @@
       <option value="manual">Manual Preview</option>
     </select>
     <button id="toggle-view-btn" style="display: none;"><i class="fas fa-eye"></i> Preview</button>
+    <button onclick="saveFile()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
     <button onclick="exportHTML()"><i class="fas fa-file-code"></i> HTML</button>
     <button onclick="exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
     <button onclick="exportImage()"><i class="fas fa-file-image"></i> Image</button>
@@ -699,7 +700,6 @@
   <div class="editor-container" id="editor-container">
     <div class="rich-toolbar">
       <div class="toolbar-group">
-        <button class="toolbar-btn" onclick="saveFile()" title="Save File"><i class="fas fa-save"></i></button>
         <button class="toolbar-btn" onclick="openFile()" title="Open File"><i class="fas fa-folder-open"></i></button>
         <input type="file" id="file-input" accept=".md,.txt" style="display: none;" onchange="handleFileLoad(event)">
       </div>
