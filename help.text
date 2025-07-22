@@ -20,13 +20,40 @@
 
 ---
 
-## Math Equations
+## Math & Equations
 Inline: $E = mc^2$
 Display: 
 $$\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}$$
 $$
 \sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
 $$
+
+$a_2$
+
+$a^2$
+
+$1 + 1 = 2$
+
+$4 \times 3 = 12$
+
+$12 \div 4 = 3$
+
+$\frac{a + b}{c + d}$
+
+$a^2 + b^2 = c^2$
+
+$\sqrt{16} = 4$
+
+$$
+\begin{bmatrix}
+a & b \\
+c & d
+\end{bmatrix}
+$$
+
+$e^{i\pi} + 1 = 0$
+
+$\sum_{i=1}^n i$
 
 ## Lists
 - Unordered item
