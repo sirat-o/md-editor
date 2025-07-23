@@ -666,6 +666,294 @@
     #preview::-webkit-scrollbar-thumb:hover {
       background: var(--button-hover);
     }
+
+    /* Export styles for image generation */
+    .export-container {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px;
+      box-sizing: border-box;
+    }
+    
+    .export-container h1, .export-container h2, .export-container h3, 
+    .export-container h4, .export-container h5, .export-container h6 {
+      margin-top: 1.2em;
+      margin-bottom: 0.6em;
+      font-weight: 600;
+    }
+    
+    .export-container h1 { 
+      font-size: 2em; 
+      border-bottom: 2px solid currentColor; 
+      padding-bottom: 0.3em; 
+    }
+    
+    .export-container h2 { 
+      font-size: 1.7em; 
+      border-bottom: 1px solid currentColor; 
+      padding-bottom: 0.3em; 
+    }
+    
+    .export-container h3 { font-size: 1.4em; }
+    .export-container h4 { font-size: 1.2em; }
+    
+    .export-container p { 
+      margin: 1em 0; 
+      line-height: 1.7; 
+    }
+    
+    .export-container code {
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.9em;
+      background: rgba(128, 128, 128, 0.15);
+    }
+    
+    .export-container pre {
+      padding: 1em;
+      overflow: auto;
+      border-radius: 6px;
+      line-height: 1.45;
+      background: rgba(128, 128, 128, 0.1);
+      border: 1px solid rgba(128, 128, 128, 0.2);
+    }
+    
+    .export-container pre code {
+      background: transparent;
+      padding: 0;
+    }
+    
+    .export-container blockquote {
+      border-left: 4px solid currentColor;
+      margin: 1em 0;
+      padding: 0.5em 0 0.5em 1em;
+      background: rgba(128, 128, 128, 0.05);
+      border-radius: 0 4px 4px 0;
+      opacity: 0.9;
+    }
+    
+    .export-container table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.5em 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .export-container table th, 
+    .export-container table td {
+      border: 1px solid rgba(128, 128, 128, 0.3);
+      padding: 0.75em 1em;
+      text-align: left;
+    }
+    
+    .export-container table th {
+      font-weight: 600;
+      background: rgba(128, 128, 128, 0.15);
+    }
+    
+    .export-container table tr:nth-child(even) {
+      background: rgba(128, 128, 128, 0.05);
+    }
+    
+    .export-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .export-container a {
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    
+    .export-container a:hover {
+      text-decoration: underline;
+      opacity: 0.8;
+    }
+    
+    .export-container ul, .export-container ol {
+      padding-left: 2em;
+      margin: 1em 0;
+    }
+    
+    .export-container li {
+      margin: 0.5em 0;
+      line-height: 1.6;
+    }
+    
+    .export-container hr {
+      border: 0;
+      height: 2px;
+      background: rgba(128, 128, 128, 0.3);
+      margin: 2em 0;
+      border-radius: 1px;
+    }
+    
+    .export-container .katex {
+      font-size: 1.1em;
+    }
+    
+    .export-container .katex-display {
+      margin: 1em 0;
+    }
+
+    /* Enhanced Prism.js styles for image export */
+    .export-container pre[class*="language-"] {
+      background: rgba(128, 128, 128, 0.1) !important;
+      color: #ccc !important;
+      border: 1px solid #444 !important;
+      border-radius: 6px !important;
+      padding: 1em !important;
+      margin: 1em 0 !important;
+      overflow: auto !important;
+      font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
+      font-size: 0.9em !important;
+      line-height: 1.5 !important;
+    }
+
+    .export-container code[class*="language-"] {
+      color: #ccc !important;
+      background: none !important;
+      font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace !important;
+      font-size: 0.9em !important;
+    }
+
+    /* Prism Tomorrow Night theme colors for export */
+    .export-container .token.comment,
+    .export-container .token.prolog,
+    .export-container .token.doctype,
+    .export-container .token.cdata {
+      color: #999 !important;
+    }
+
+    .export-container .token.punctuation {
+      color: #ccc !important;
+    }
+
+    .export-container .token.property,
+    .export-container .token.tag,
+    .export-container .token.boolean,
+    .export-container .token.number,
+    .export-container .token.constant,
+    .export-container .token.symbol,
+    .export-container .token.deleted {
+      color: #f2777a !important;
+    }
+
+    .export-container .token.selector,
+    .export-container .token.attr-name,
+    .export-container .token.string,
+    .export-container .token.char,
+    .export-container .token.builtin,
+    .export-container .token.inserted {
+      color: #99cc99 !important;
+    }
+
+    .export-container .token.operator,
+    .export-container .token.entity,
+    .export-container .token.url,
+    .export-container .language-css .token.string,
+    .export-container .style .token.string {
+      color: #67cdcc !important;
+    }
+
+    .export-container .token.atrule,
+    .export-container .token.attr-value,
+    .export-container .token.keyword {
+      color: #cc99cd !important;
+    }
+
+    .export-container .token.function,
+    .export-container .token.class-name {
+      color: #ffcc66 !important;
+    }
+
+    .export-container .token.regex,
+    .export-container .token.important,
+    .export-container .token.variable {
+      color: #f99157 !important;
+    }
+
+    .export-container .token.important,
+    .export-container .token.bold {
+      font-weight: bold !important;
+    }
+
+    .export-container .token.italic {
+      font-style: italic !important;
+    }
+
+    .export-container .token.entity {
+      cursor: help !important;
+    }
+
+    /* Light theme syntax highlighting for export */
+    .export-container.light-theme pre[class*="language-"] {
+      background: #f5f5f5 !important;
+      color: #333 !important;
+      border: 1px solid #ddd !important;
+    }
+
+    .export-container.light-theme code[class*="language-"] {
+      color: #333 !important;
+    }
+
+    .export-container.light-theme .token.comment,
+    .export-container.light-theme .token.prolog,
+    .export-container.light-theme .token.doctype,
+    .export-container.light-theme .token.cdata {
+      color: #708090 !important;
+    }
+
+    .export-container.light-theme .token.property,
+    .export-container.light-theme .token.tag,
+    .export-container.light-theme .token.boolean,
+    .export-container.light-theme .token.number,
+    .export-container.light-theme .token.constant,
+    .export-container.light-theme .token.symbol,
+    .export-container.light-theme .token.deleted {
+      color: #d73a49 !important;
+    }
+
+    .export-container.light-theme .token.selector,
+    .export-container.light-theme .token.attr-name,
+    .export-container.light-theme .token.string,
+    .export-container.light-theme .token.char,
+    .export-container.light-theme .token.builtin,
+    .export-container.light-theme .token.inserted {
+      color: #22863a !important;
+    }
+
+    .export-container.light-theme .token.operator,
+    .export-container.light-theme .token.entity,
+    .export-container.light-theme .token.url,
+    .export-container.light-theme .language-css .token.string,
+    .export-container.light-theme .style .token.string {
+      color: #005cc5 !important;
+    }
+
+    .export-container.light-theme .token.atrule,
+    .export-container.light-theme .token.attr-value,
+    .export-container.light-theme .token.keyword {
+      color: #d73a49 !important;
+    }
+
+    .export-container.light-theme .token.function,
+    .export-container.light-theme .token.class-name {
+      color: #6f42c1 !important;
+    }
+
+    .export-container.light-theme .token.regex,
+    .export-container.light-theme .token.important,
+    .export-container.light-theme .token.variable {
+      color: #e36209 !important;
+    }
   </style>
 </head>
 <body class="theme-dark">
@@ -806,6 +1094,7 @@ Start writing your markdown here with advanced features."></textarea>
 </div>
 
 <script>
+
   const editor = document.getElementById('editor');
   const preview = document.getElementById('preview');
   const modeSelect = document.getElementById('mode-select');
@@ -1418,7 +1707,7 @@ function showSyntaxHelp() {
     editor.select();
   }
 
-  function exportHTML() {
+function exportHTML() {
     // Create a temporary preview with math rendered
     const tempDiv = document.createElement('div');
     let content = editor.value;
@@ -1441,6 +1730,9 @@ function showSyntaxHelp() {
     });
     
     tempDiv.innerHTML = marked.parse(content);
+    
+    // Apply syntax highlighting to code blocks
+    Prism.highlightAllUnder(tempDiv);
 
     const htmlContent = `<!DOCTYPE html>
 <html>
@@ -1449,7 +1741,7 @@ function showSyntaxHelp() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Markdown Export</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -1458,6 +1750,7 @@ function showSyntaxHelp() {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      background-color: #ffffff;
     }
     h1, h2, h3, h4, h5, h6 {
       color: #2c3e50;
@@ -1470,24 +1763,26 @@ function showSyntaxHelp() {
     h4 { font-size: 1.2em; }
     p { margin: 1em 0; line-height: 1.7; }
     code {
-      background: #f8f8f8;
+      background: #f5f5f5;
       padding: 0.2em 0.4em;
       border-radius: 3px;
       font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: 0.9em;
-      color: #e83e8c;
+      color: #d63384;
     }
     pre {
-      background: #f8f8f8;
+      background: #f5f5f5;
       padding: 1em;
       overflow: auto;
       border-radius: 4px;
       line-height: 1.45;
+      margin: 1em 0;
+      border: 1px solid #e1e1e1;
     }
     pre code {
       background: transparent;
       padding: 0;
-      color: inherit;
+      color: #333;
     }
     blockquote {
       border-left: 4px solid #3498db;
@@ -1553,6 +1848,75 @@ function showSyntaxHelp() {
     .katex-display {
       margin: 1em 0;
     }
+
+    /* Prism Light Theme Colors */
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+      color: #708090;
+    }
+
+    .token.punctuation {
+      color: #999;
+    }
+
+    .token.property,
+    .token.tag,
+    .token.boolean,
+    .token.number,
+    .token.constant,
+    .token.symbol,
+    .token.deleted {
+      color: #d63384;
+    }
+
+    .token.selector,
+    .token.attr-name,
+    .token.string,
+    .token.char,
+    .token.builtin,
+    .token.inserted {
+      color: #22863a;
+    }
+
+    .token.operator,
+    .token.entity,
+    .token.url,
+    .language-css .token.string,
+    .style .token.string {
+      color: #005cc5;
+    }
+
+    .token.atrule,
+    .token.attr-value,
+    .token.keyword {
+      color: #d63384;
+    }
+
+    .token.function,
+    .token.class-name {
+      color: #6f42c1;
+    }
+
+    .token.regex,
+    .token.important,
+    .token.variable {
+      color: #e36209;
+    }
+
+    .token.important,
+    .token.bold {
+      font-weight: bold;
+    }
+
+    .token.italic {
+      font-style: italic;
+    }
+
+    .token.entity {
+      cursor: help;
+    }
   </style>
 </head>
 <body>
@@ -1565,7 +1929,7 @@ ${tempDiv.innerHTML}
     link.href = URL.createObjectURL(blob);
     link.download = 'markdown_export.html';
     link.click();
-  }
+}
 
   function exportPDF() {
     // Create a temporary preview with math rendered
@@ -1626,8 +1990,24 @@ ${tempDiv.innerHTML}
     });
   }
 
+  // Get current theme colors
+  function getCurrentThemeColors() {
+    const computedStyle = getComputedStyle(document.body);
+    return {
+      bgColor: computedStyle.getPropertyValue('--preview-bg').trim(),
+      textColor: computedStyle.getPropertyValue('--text-color').trim(),
+      accentColor: computedStyle.getPropertyValue('--accent-color').trim(),
+      dividerColor: computedStyle.getPropertyValue('--divider-color').trim()
+    };
+  }
+
+  // Check if current theme is light
+  function isLightTheme() {
+    return document.body.classList.contains('theme-light');
+  }
+
   function exportImage() {
-    // Create a temporary preview with math rendered
+    // Create a temporary preview with math rendered and proper styling
     const tempDiv = document.createElement('div');
     let content = editor.value;
     
@@ -1649,31 +2029,137 @@ ${tempDiv.innerHTML}
     });
     
     tempDiv.innerHTML = marked.parse(content);
-    tempDiv.style.width = '800px';
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.top = '0';
-    tempDiv.style.left = '-9999px';
-    tempDiv.style.background = '#1e1e1e';
-    tempDiv.style.color = '#eee';
-    tempDiv.style.padding = '20px';
-    tempDiv.style.zIndex = '-1';
-    tempDiv.style.overflow = 'visible';
-
-    // Let browser calculate full height
-    document.body.appendChild(tempDiv);
-    requestAnimationFrame(() => {
-      html2canvas(tempDiv, {
-        scale: 3,
-        useCORS: true,
-        windowWidth: tempDiv.scrollWidth,
-        windowHeight: tempDiv.scrollHeight
-      }).then(canvas => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'markdown_export.png';
-        link.click();
-        document.body.removeChild(tempDiv);
+    
+    // Apply syntax highlighting to code blocks BEFORE styling
+    Prism.highlightAllUnder(tempDiv);
+    
+    // Add the export-container class for proper styling
+    tempDiv.className = 'export-container';
+    
+    // Add light theme class if current theme is light
+    if (isLightTheme()) {
+      tempDiv.classList.add('light-theme');
+    }
+    
+    // Get current theme colors
+    const themeColors = getCurrentThemeColors();
+    
+    // Apply theme-aware styling
+    tempDiv.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: -9999px;
+      width: 900px;
+      background: ${themeColors.bgColor};
+      color: ${themeColors.textColor};
+      padding: 40px;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      overflow: visible;
+      z-index: -1;
+    `;
+    
+    // Apply accent color to headings and links
+    const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    headings.forEach(heading => {
+      heading.style.color = themeColors.accentColor;
+    });
+    
+    const links = tempDiv.querySelectorAll('a');
+    links.forEach(link => {
+      link.style.color = themeColors.accentColor;
+    });
+    
+    // Apply proper table styling
+    const tables = tempDiv.querySelectorAll('table');
+    tables.forEach(table => {
+      table.style.cssText = `
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1.5em 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 6px;
+        overflow: hidden;
+      `;
+      
+      const cells = table.querySelectorAll('th, td');
+      cells.forEach(cell => {
+        cell.style.cssText = `
+          border: 1px solid ${themeColors.dividerColor};
+          padding: 0.75em 1em;
+          text-align: left;
+        `;
       });
+      
+      const headers = table.querySelectorAll('th');
+      headers.forEach(header => {
+        header.style.cssText += `
+          font-weight: 600;
+          background: rgba(128, 128, 128, 0.15);
+        `;
+      });
+      
+      const rows = table.querySelectorAll('tr:nth-child(even)');
+      rows.forEach(row => {
+        row.style.background = 'rgba(128, 128, 128, 0.05)';
+      });
+    });
+    
+    // Apply proper blockquote styling
+    const blockquotes = tempDiv.querySelectorAll('blockquote');
+    blockquotes.forEach(blockquote => {
+      blockquote.style.cssText = `
+        border-left: 4px solid ${themeColors.accentColor};
+        margin: 1em 0;
+        padding: 0.5em 0 0.5em 1em;
+        background: rgba(128, 128, 128, 0.05);
+        border-radius: 0 4px 4px 0;
+        opacity: 0.9;
+      `;
+    });
+    
+    // Apply proper inline code styling (not in pre blocks)
+    const inlineCodes = tempDiv.querySelectorAll('code:not(pre code)');
+    inlineCodes.forEach(code => {
+      code.style.cssText = `
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.9em;
+        background: rgba(128, 128, 128, 0.15);
+      `;
+    });
+
+    // Add to DOM temporarily
+    document.body.appendChild(tempDiv);
+    
+    // Wait for fonts and styles to load, then capture
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        html2canvas(tempDiv, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: themeColors.bgColor,
+          windowWidth: tempDiv.scrollWidth,
+          windowHeight: tempDiv.scrollHeight,
+          width: tempDiv.scrollWidth,
+          height: tempDiv.scrollHeight,
+          scrollX: 0,
+          scrollY: 0
+        }).then(canvas => {
+          const link = document.createElement('a');
+          link.href = canvas.toDataURL('image/png', 1.0);
+          link.download = 'markdown_export.png';
+          link.click();
+          document.body.removeChild(tempDiv);
+        }).catch(error => {
+          console.error('Error generating image:', error);
+          document.body.removeChild(tempDiv);
+          alert('Error generating image. Please try again.');
+        });
+      }, 200); // Increased timeout to ensure Prism highlighting is applied
     });
   }
 
