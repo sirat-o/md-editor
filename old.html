@@ -527,6 +527,126 @@
     }
     }
 
+    /* Find and Replace Dialog Styles */
+    .find-replace-dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--header-bg);
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      min-width: 400px;
+      display: none;
+    }
+    .find-replace-dialog.active {
+      display: block;
+    }
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .dialog-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    .dialog-close {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 1.2em;
+      padding: 5px;
+      border-radius: 3px;
+    }
+    .dialog-close:hover {
+      background: var(--button-hover);
+    }
+    .dialog-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+    .dialog-label {
+      min-width: 80px;
+      color: var(--text-color);
+      font-size: 0.9em;
+    }
+    .dialog-input {
+      flex: 1;
+      padding: 8px 12px;
+      background: var(--editor-bg);
+      color: var(--text-color);
+      border: 1px solid var(--divider-color);
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .dialog-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+    .dialog-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+      justify-content: flex-end;
+    }
+    .dialog-btn {
+      padding: 8px 16px;
+      background: var(--button-bg);
+      color: var(--text-color);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+    }
+    .dialog-btn:hover {
+      background: var(--button-hover);
+    }
+    .dialog-btn.primary {
+      background: var(--accent-color);
+      color: var(--bg-color);
+    }
+    .dialog-btn.primary:hover {
+      opacity: 0.9;
+    }
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+    .dialog-overlay.active {
+      display: block;
+    }
+    .find-options {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+      font-size: 0.85em;
+    }
+    .find-option {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-color);
+    }
+    .find-option input[type="checkbox"] {
+      accent-color: var(--accent-color);
+    }
+
     /* Custom scrollbar styles */
     textarea::-webkit-scrollbar,
     #preview::-webkit-scrollbar {
@@ -546,8 +666,7 @@
     #preview::-webkit-scrollbar-thumb:hover {
       background: var(--button-hover);
     }
-
-          .live-dot {
+              .live-dot {
     display: inline-block;
     width: 10px;
     height: 10px;
@@ -605,6 +724,7 @@
       <option value="manual">Manual Preview</option>
     </select>
     <button id="toggle-view-btn" style="display: none;"><i class="fas fa-eye"></i> Preview</button>
+    <button onclick="saveFile()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
     <button onclick="exportHTML()"><i class="fas fa-file-code"></i> HTML</button>
     <button onclick="exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
     <button onclick="exportImage()"><i class="fas fa-file-image"></i> Image</button>
@@ -615,6 +735,10 @@
   <div class="editor-container" id="editor-container">
     <div class="rich-toolbar">
       <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="openFile()" title="Open File"><i class="fas fa-folder-open"></i></button>
+        <input type="file" id="file-input" accept=".md,.txt" style="display: none;" onchange="handleFileLoad(event)">
+      </div>
+      <div class="toolbar-group">
         <button class="toolbar-btn" onclick="insertText('# ', '')" title="Heading 1"><i class="fas fa-heading"></i>1</button>
         <button class="toolbar-btn" onclick="insertText('## ', '')" title="Heading 2"><i class="fas fa-heading"></i>2</button>
         <button class="toolbar-btn" onclick="insertText('### ', '')" title="Heading 3"><i class="fas fa-heading"></i>3</button>
@@ -622,7 +746,10 @@
       <div class="toolbar-group">
         <button class="toolbar-btn" onclick="wrapText('**', '**')" title="Bold"><i class="fas fa-bold"></i></button>
         <button class="toolbar-btn" onclick="wrapText('*', '*')" title="Italic"><i class="fas fa-italic"></i></button>
+        <button class="toolbar-btn" onclick="wrapText('<u>', '</u>')" title="Underline"><i class="fas fa-underline"></i></button>
         <button class="toolbar-btn" onclick="wrapText('~~', '~~')" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+        <button class="toolbar-btn" onclick="wrapText('<sup>', '</sup>')" title="Superscript"><i class="fas fa-superscript"></i></button>
+        <button class="toolbar-btn" onclick="wrapText('<sub>', '</sub>')" title="Subscript"><i class="fas fa-subscript"></i></button>
         <button class="toolbar-btn" onclick="wrapText('`', '`')" title="Inline Code"><i class="fas fa-code"></i></button>
       </div>
       <div class="toolbar-group">
@@ -645,6 +772,8 @@
         <button class="toolbar-btn" onclick="wrapText('$$\n', '\n$$')" title="Display Math"><i class="fas fa-calculator"></i></button>
       </div>
       <div class="toolbar-group">
+        <button class="toolbar-btn" onclick="findText()" title="Find"><i class="fas fa-search"></i></button>
+        <button class="toolbar-btn" onclick="selectAllText()" title="Select All"><i class="fas fa-check-square"></i></button>
         <button class="toolbar-btn" onclick="undoAction()" title="Undo"><i class="fas fa-undo"></i></button>
         <button class="toolbar-btn" onclick="redoAction()" title="Redo"><i class="fas fa-redo"></i></button>
       </div>
@@ -670,6 +799,46 @@ Start writing your markdown here with advanced features."></textarea>
     <div id="preview"></div>
   </div>
 </main>
+
+<!-- Find and Replace Dialog -->
+<div class="dialog-overlay" id="dialog-overlay" onclick="closeFindReplaceDialog()"></div>
+<div class="find-replace-dialog" id="find-replace-dialog">
+  <div class="dialog-header">
+    <span class="dialog-title">Find and Replace</span>
+    <button class="dialog-close" onclick="closeFindReplaceDialog()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  
+  <div class="dialog-row">
+    <label class="dialog-label">Find:</label>
+    <input type="text" class="dialog-input" id="find-input" placeholder="Enter text to find">
+  </div>
+  
+  <div class="dialog-row">
+    <label class="dialog-label">Replace:</label>
+    <input type="text" class="dialog-input" id="replace-input" placeholder="Enter replacement text">
+  </div>
+  
+  <div class="find-options">
+    <label class="find-option">
+      <input type="checkbox" id="case-sensitive">
+      Case sensitive
+    </label>
+    <label class="find-option">
+      <input type="checkbox" id="whole-word">
+      Whole word
+    </label>
+  </div>
+  
+  <div class="dialog-actions">
+    <button class="dialog-btn" onclick="findNext()">Find Next</button>
+    <button class="dialog-btn" onclick="findPrevious()">Find Previous</button>
+    <button class="dialog-btn" onclick="replaceOne()">Replace</button>
+    <button class="dialog-btn primary" onclick="replaceAll()">Replace All</button>
+    <button class="dialog-btn" onclick="closeFindReplaceDialog()">Close</button>
+  </div>
+</div>
 <footer style="text-align: center; padding: 1em; font-size: 1rem; color: #fffefe;">
   This is an old version. Please use the &nbsp; <span class="live-dot" title="Live"></span>
    <b><a href="https://mish0as.github.io/md-editor/" target="_blank" style="color: #4fa3ff; text-decoration: none;">
@@ -944,7 +1113,23 @@ Start writing your markdown here with advanced features."></textarea>
       switch (e.key) {
         case 's':
           e.preventDefault();
-          exportHTML();
+          saveFile();
+          break;
+        case 'o':
+          e.preventDefault();
+          openFile();
+          break;
+        case 'f':
+          if (document.activeElement === editor) {
+            e.preventDefault();
+            findText();
+          }
+          break;
+        case 'a':
+          if (document.activeElement === editor) {
+            e.preventDefault();
+            selectAllText();
+          }
           break;
         case 'z':
           if (!e.shiftKey) {
@@ -969,6 +1154,12 @@ Start writing your markdown here with advanced features."></textarea>
           if (document.activeElement === editor) {
             e.preventDefault();
             wrapText('*', '*');
+          }
+          break;
+        case 'u':
+          if (document.activeElement === editor) {
+            e.preventDefault();
+            wrapText('<u>', '</u>');
           }
           break;
       }
@@ -1017,6 +1208,255 @@ function showSyntaxHelp() {
     if (isLivePreview || isPreviewVisible) {
       updatePreview();
     }
+  }
+
+  // New toolbar functions
+  function saveFile() {
+    const content = editor.value;
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'document.md';
+    link.click();
+  }
+
+  function openFile() {
+    document.getElementById('file-input').click();
+  }
+
+  function handleFileLoad(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        editor.value = e.target.result;
+        updateWordCount();
+        if (isLivePreview) {
+          updatePreview();
+        }
+        saveToUndoStack();
+        currentContent = editor.value;
+      };
+      reader.readAsText(file);
+    }
+  }
+
+  // Find and Replace functionality
+  let currentSearchIndex = -1;
+  let searchMatches = [];
+  let lastSearchTerm = '';
+
+  function findText() {
+    openFindReplaceDialog();
+  }
+
+  function openFindReplaceDialog() {
+    document.getElementById('dialog-overlay').classList.add('active');
+    document.getElementById('find-replace-dialog').classList.add('active');
+    document.getElementById('find-input').focus();
+    
+    // If there's selected text, use it as the search term
+    const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+    if (selectedText) {
+      document.getElementById('find-input').value = selectedText;
+    }
+  }
+
+  function closeFindReplaceDialog() {
+    document.getElementById('dialog-overlay').classList.remove('active');
+    document.getElementById('find-replace-dialog').classList.remove('active');
+    editor.focus();
+    clearHighlights();
+  }
+
+  function buildSearchRegex(searchTerm) {
+    const caseSensitive = document.getElementById('case-sensitive').checked;
+    const wholeWord = document.getElementById('whole-word').checked;
+    
+    let pattern = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
+    
+    if (wholeWord) {
+      pattern = '\\b' + pattern + '\\b';
+    }
+    
+    const flags = caseSensitive ? 'g' : 'gi';
+    return new RegExp(pattern, flags);
+  }
+
+  function findMatches(searchTerm) {
+    if (!searchTerm) return [];
+    
+    const regex = buildSearchRegex(searchTerm);
+    const content = editor.value;
+    const matches = [];
+    let match;
+    
+    while ((match = regex.exec(content)) !== null) {
+      matches.push({
+        index: match.index,
+        length: match[0].length,
+        text: match[0]
+      });
+      
+      // Prevent infinite loop on zero-length matches
+      if (match.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+    }
+    
+    return matches;
+  }
+
+  function highlightMatch(matchIndex) {
+    if (matchIndex >= 0 && matchIndex < searchMatches.length) {
+      const match = searchMatches[matchIndex];
+      editor.focus();
+      editor.setSelectionRange(match.index, match.index + match.length);
+      
+      // Scroll to the match
+      const lineHeight = parseInt(getComputedStyle(editor).lineHeight);
+      const lines = editor.value.substring(0, match.index).split('\n').length;
+      editor.scrollTop = Math.max(0, (lines - 5) * lineHeight);
+    }
+  }
+
+  function clearHighlights() {
+    // Clear any existing highlights
+    searchMatches = [];
+    currentSearchIndex = -1;
+  }
+
+  function findNext() {
+    const searchTerm = document.getElementById('find-input').value;
+    if (!searchTerm) return;
+    
+    if (searchTerm !== lastSearchTerm) {
+      searchMatches = findMatches(searchTerm);
+      lastSearchTerm = searchTerm;
+      currentSearchIndex = -1;
+    }
+    
+    if (searchMatches.length === 0) {
+      alert('Text not found');
+      return;
+    }
+    
+    currentSearchIndex = (currentSearchIndex + 1) % searchMatches.length;
+    highlightMatch(currentSearchIndex);
+  }
+
+  function findPrevious() {
+    const searchTerm = document.getElementById('find-input').value;
+    if (!searchTerm) return;
+    
+    if (searchTerm !== lastSearchTerm) {
+      searchMatches = findMatches(searchTerm);
+      lastSearchTerm = searchTerm;
+      currentSearchIndex = searchMatches.length;
+    }
+    
+    if (searchMatches.length === 0) {
+      alert('Text not found');
+      return;
+    }
+    
+    currentSearchIndex = currentSearchIndex <= 0 ? searchMatches.length - 1 : currentSearchIndex - 1;
+    highlightMatch(currentSearchIndex);
+  }
+
+  function replaceOne() {
+    const searchTerm = document.getElementById('find-input').value;
+    const replaceTerm = document.getElementById('replace-input').value;
+    
+    if (!searchTerm) return;
+    
+    if (searchMatches.length === 0) {
+      findNext();
+      return;
+    }
+    
+    if (currentSearchIndex >= 0 && currentSearchIndex < searchMatches.length) {
+      const match = searchMatches[currentSearchIndex];
+      const content = editor.value;
+      
+      // Replace the current match
+      const newContent = content.substring(0, match.index) + 
+                        replaceTerm + 
+                        content.substring(match.index + match.length);
+      
+      editor.value = newContent;
+      
+      // Update cursor position
+      editor.setSelectionRange(match.index + replaceTerm.length, match.index + replaceTerm.length);
+      
+      // Refresh matches after replacement
+      const lengthDiff = replaceTerm.length - match.length;
+      searchMatches = findMatches(searchTerm);
+      
+      // Adjust current index
+      if (currentSearchIndex < searchMatches.length) {
+        highlightMatch(currentSearchIndex);
+      } else if (searchMatches.length > 0) {
+        currentSearchIndex = 0;
+        highlightMatch(currentSearchIndex);
+      }
+      
+      handleEditorInput();
+    }
+  }
+
+  function replaceAll() {
+    const searchTerm = document.getElementById('find-input').value;
+    const replaceTerm = document.getElementById('replace-input').value;
+    
+    if (!searchTerm) return;
+    
+    const regex = buildSearchRegex(searchTerm);
+    const content = editor.value;
+    const newContent = content.replace(regex, replaceTerm);
+    
+    if (newContent !== content) {
+      const replacementCount = (content.match(regex) || []).length;
+      editor.value = newContent;
+      editor.focus();
+      handleEditorInput();
+      alert(`Replaced ${replacementCount} occurrence(s)`);
+      
+      // Clear search state
+      searchMatches = [];
+      currentSearchIndex = -1;
+      lastSearchTerm = '';
+    } else {
+      alert('Text not found');
+    }
+  }
+
+  // Add keyboard support for the dialog
+  document.addEventListener('keydown', function(e) {
+    const dialog = document.getElementById('find-replace-dialog');
+    if (dialog.classList.contains('active')) {
+      if (e.key === 'Escape') {
+        closeFindReplaceDialog();
+      } else if (e.key === 'Enter') {
+        if (e.shiftKey) {
+          findPrevious();
+        } else {
+          findNext();
+        }
+      } else if (e.key === 'F3') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          findPrevious();
+        } else {
+          findNext();
+        }
+      }
+    }
+  });
+
+  function selectAllText() {
+    editor.focus();
+    editor.select();
   }
 
   function exportHTML() {
