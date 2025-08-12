@@ -14,6 +14,7 @@
 - **Bold**
 - ***Bold Italic***
 - ~~Strikethrough~~
+- <mark>Highlight</mark>
 - `Inline code`
 - <sub>Subscript</sub>, <sup>Superscript</sup>
 - Escaped characters: \* \_ \` \> \\ \#
@@ -84,7 +85,7 @@ $\sum_{i=1}^n i$
 
 ## Images & Links
 
-![Alt text](https://via.placeholder.com/150 "Optional title")
+![Markdown Image](https://css-tricks.com/wp-content/uploads/2016/01/choose-markdown.jpg "Demo Image")
 
 [Website](https://openai.com)
 [https://google.com](https://google.com)
@@ -120,6 +121,9 @@ tags: [markdown, test, full]
 
 ## Horizontal Rule
 ---
+
+## Footnote Support
+This is a footnote[^1]
 
 ##  Embedded HTML
 
@@ -169,14 +173,6 @@ graph TD;
 
 ---
 
-&copy; 2025 Your Company  
-&mdash; This is a dash  
-&nbsp; Non-breaking space  
-&gt; Greater than symbol  
-&lt; Less than symbol
-
-----
-
 ## Complex Combination
 
 ### Nested Elements
@@ -193,7 +189,23 @@ graph TD;
 >    | 1 | 2 |
 -----
 ------
----
+# Sticky Note design.
+:::note
+This is a note
+:::
+:::tip
+This is a tip
+:::
+:::important
+This is important
+:::
+:::warning
+This is a warning
+:::
+:::caution
+This is a caution
+:::
+
 ## Keyboard Shortcuts
 - Ctrl+B: Bold
 - Ctrl+I: Italic
@@ -202,3 +214,6 @@ graph TD;
 - Ctrl+S: Export HTML
 - Tab: Indent
 - Shift+Tab: Unindent
+
+
+[^1]: This is Footnote's reference.
